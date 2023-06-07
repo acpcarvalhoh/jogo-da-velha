@@ -32,12 +32,16 @@ const App = {
 
         App.$.squares.forEach(square => {
             square.addEventListener('click', (event) => {
-                console.log(event.target.id)
-                console.log(`jogador atual é ${App.state.currentPlayer}`)
+               
+                // verifica de já há uma jogada, então retorne.
+                if(square.hasChildNodes()){
+                    return
+                }
 
                 const currentPlayer = App.state.currentPlayer
                 const icon = document.createElement('i')
 
+                ///  Determine qual icone de jogador adicionar no quadrado
                 if(currentPlayer == 1){
                     icon.classList.add('fa-solid', 'fa-x', 'turquoise')
                 }else{
@@ -46,13 +50,22 @@ const App = {
 
                 App.state.currentPlayer = App.state.currentPlayer == 1? 2 : 1
 
-                event.target.replaceChildren(icon)
+                square.replaceChildren(icon)
+
+                // verifique se tem um vecendor ou uma gravata
+                const winningPatterns = [
+                    [1, 2, 3],
+                    [1, 5, 9],
+                    [1, 4, 7],
+                    [2, 5, 8],
+                    [3, 5, 7],
+                    [3, 6, 9],
+                    [4, 5, 6],
+                    [7, 8, 9],
+                ];
 
             })
 
-        
-            //<i class="fa-solid fa-x yellow"></i>
-            //<i class="fa-solid fa-o turquoise"></i>
         })
     }
 };
