@@ -8,6 +8,7 @@ const App = {
         modal: document.querySelector('[data-id="modal"]'),
         modalText: document.querySelector('[data-id="modal-text"]'),
         modalBtn: document.querySelector('[data-id="modal-btn"]'),
+        turn: document.querySelector('[data-id="turn"]'),
     },
 
     state: {
@@ -50,6 +51,8 @@ const App = {
         }
     },
 
+    
+
     init(){ 
         App.registerEventListener()
     },
@@ -67,6 +70,14 @@ const App = {
 
         App.$.newRoundBtn.addEventListener('click', event => {
             console.log('Nova rodada')
+        })
+
+        App.$.modalBtn.addEventListener('click', (event) => {
+            App.state.moves = []
+
+            App.$.modal.classList.add('hidden')
+            App.$.squares.forEach(square => square.replaceChildren())
+            
         })
 
         App.$.squares.forEach(square => {
@@ -89,14 +100,27 @@ const App = {
                 const currentPlayer = App.state.moves.length == 0? 
                 1: getOppositePlayer(lastMove.playerId)
 
-                const icon = document.createElement('i')
+                const nexPlayer = getOppositePlayer(currentPlayer)
+
+                const squareIcon = document.createElement('i')
+                const turnIcon = document.createElement('i')
+                const turnLabel = document.createElement('p')
+                turnLabel.innerText = `Jogador ${nexPlayer}, sua vez!`
 
                 ///  Determine qual icone de jogador adicionar no quadrado
                 if(currentPlayer == 1){
-                    icon.classList.add('fa-solid', 'fa-x', 'turquoise')
+                    squareIcon.classList.add('fa-solid', 'fa-x', 'turquoise')
+                    turnIcon.classList.add('fa-solid', 'fa-o', 'yellow')
+
+                    turnLabel.classList = 'yellow'
                 }else{
-                    icon.classList.add('fa-solid', 'fa-o', 'yellow')
+                    squareIcon.classList.add('fa-solid', 'fa-o', 'yellow')
+                    turnIcon.classList.add('fa-solid', 'fa-x', 'turquoise')
+
+                    turnLabel.classList = 'turquoise'
                 }
+
+                App.$.turn.replaceChildren(turnIcon, turnLabel)
 
                 App.state.moves.push({
                     squareId: +square.id,
@@ -109,19 +133,27 @@ const App = {
                 
                 
 
-                square.replaceChildren(icon)
+                square.replaceChildren(squareIcon)
 
                 // verificar se tem um vencedor 
                 const game = App.getGameStatus(App.state.moves)
 
                 if(game.status === 'Jogo completo'){
+                    App.$.modal.classList.remove('hidden')
+
+                    let message = ''
                     if(game.winner){
-                        App.$.modal.classList.remove('hidden')
-                        App.$.modalText.innerHTML = `Jodador ${game.winner} venceu!`
+                        message = `Jodador ${game.winner} venceu!`
+
                     }else{
-                        alert('jogo sem vencedor')
+                        message = 'Jogo sem vencedor!'
                     }
+
+
+                    App.$.modalText.innerHTML = message
                 }
+
+                
 
             })
 
