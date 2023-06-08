@@ -8,7 +8,7 @@ const App = {
     },
 
     state: {
-        currentPlayer: 1   
+        moves: []   
     },
 
     init(){ 
@@ -34,11 +34,22 @@ const App = {
             square.addEventListener('click', (event) => {
                
                 // verifica de já há uma jogada, então retorne.
-                if(square.hasChildNodes()){
+
+                const hasMove = (squareId) => {
+                    const existingMoves = App.state.moves.find((move) => move.squareId === squareId)
+                    return existingMoves !== undefined
+                }
+
+                if(hasMove(+square.id)){
                     return
                 }
 
-                const currentPlayer = App.state.currentPlayer
+                const lastMove = App.state.moves.at(-1)
+                const getOppositePlayer = (playerId) => playerId == 1? 2: 1
+
+                const currentPlayer = App.state.moves.length == 0? 
+                1: getOppositePlayer(lastMove.playerId)
+
                 const icon = document.createElement('i')
 
                 ///  Determine qual icone de jogador adicionar no quadrado
@@ -48,7 +59,16 @@ const App = {
                     icon.classList.add('fa-solid', 'fa-o', 'yellow')
                 }
 
-                App.state.currentPlayer = App.state.currentPlayer == 1? 2 : 1
+                App.state.moves.push({
+                    squareId: +square.id,
+                    playerId: currentPlayer
+                })
+
+                console.log(App.state.moves)
+                App.state.currentPlayer = currentPlayer == 1? 2 : 1
+
+                
+                
 
                 square.replaceChildren(icon)
 
