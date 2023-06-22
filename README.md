@@ -1,1 +1,1 @@
-# <h1 align="center">Bogo da velha</h1>
+# <h1 align="center">Jogo da velha</h1>
